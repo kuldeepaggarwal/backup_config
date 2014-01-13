@@ -8,8 +8,9 @@ module ::Backup
       def self.update_storage_file!
         packages = yaml_load
         if @storage.keep.is_a? Proc
-          @packages_to_remove = packages - packages.reject { |pkg| @storage.keep.call pkg }
-          packages = packages - @packages_to_remove
+          packages_to_keep = packages.select { |pkg| @storage.keep.call pkg }
+          @packages_to_remove = packages - packages_to_keep
+          packages = packages_to_keep
         else
           packages = packages.unshift(@package)
           excess = packages.count - @storage.keep.to_i

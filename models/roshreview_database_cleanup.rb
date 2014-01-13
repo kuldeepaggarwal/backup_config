@@ -14,9 +14,8 @@ class << model_instance
         start = 0
         cf.keep = lambda do |pkg|
           time = (pkg.time.class == String) ? Time.strptime(pkg.time, '%Y.%m.%d.%H.%M.%S') : pkg.time
-          will_be_deleted = time < min_day_passed && time.hour > start
-          pkg.no_cycle = !will_be_deleted
-          will_be_deleted
+          will_be_saved = !(time < min_day_passed && time.hour > start)
+          pkg.no_cycle = will_be_saved
         end
       end
     end.storages.first.send :cycle!
